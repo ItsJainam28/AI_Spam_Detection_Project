@@ -12,28 +12,29 @@ df = pd.read_csv('Youtube01-Psy.csv')
 
 # Step 3: Basic data exploration
 print(df.head())
-print(df.info())
+print(df.describe())
+
 
 # Step 4: Prepare the data
 X = df['CONTENT']
 y = df['CLASS']
 
 # Tokenize and remove stopwords
-
 stop_words = set(stopwords.words('english'))
 X = X.apply(lambda x: ' '.join([word for word in word_tokenize(x) if word not in stop_words]))
 
 # Step 5: Vectorize the data
 count_vectorizer = CountVectorizer()
-X_counts = count_vectorizer.fit_transform(X)
-print(X_counts.shape)
+X_count_vectorized = count_vectorizer.fit_transform(X)
+print(X_count_vectorized.shape)
 
 # Step 6: Downscale data
 tfidf_transformer = TfidfTransformer()
-X_tfidf = tfidf_transformer.fit_transform(X_counts)
+X_tfidf = tfidf_transformer.fit_transform(X_count_vectorized)
 print(X_tfidf.shape)
 
 # Step 7: Shuffle the dataset
+# Does not make a difference in this case 
 df = df.sample(frac=1)
 
 # Step 8: Split the data
@@ -42,25 +43,25 @@ X_train, X_test = X_tfidf[:train_size], X_tfidf[train_size:]
 y_train, y_test = y[:train_size], y[train_size:]
 
 # Step 9: Fit the data into a Naive Bayes classifier
-clf = MultinomialNB().fit(X_train, y_train)
+classifier = MultinomialNB().fit(X_train, y_train)
 
 # Step 10: Cross validate the model
-scores = cross_val_score(clf, X_train, y_train, cv=5)
+scores = cross_val_score(classifier, X_train, y_train, cv=5)
 print("Mean cross-validation accuracy: ", scores.mean())
 
 # Step 11: Test the model
-y_pred = clf.predict(X_test)
+y_pred = classifier.predict(X_test)
 print(confusion_matrix(y_test, y_pred))
 print("Accuracy: ", accuracy_score(y_test, y_pred))
 
 # Step 12: Test with new comments
 new_comments = [
-    "I love this video, it's amazing!",
-    "Great content, keep it up!",
-    "https://www.youtube.com/watch?v=lBO1L8pgR9s&ab_channel=UnfoldDataScience",
+    "The animation on season 2 of Jujutsu kaisen is trash!",
+    "Mr beast is giving away free money on telegram on this link: https://t.me/MrBeast1000000",
+    "The movies are so boring these days...They just create same old stories again and again.",
     "Check out this video link: https://www.youtube.com/watch?v=lBO1L8pgR9s&ab_channel=UnfoldDataScience",
-    "Win a free iPhone, click here!",
+    "Win a free iPhone 15 pro, click here!",
 ]
 new_comments_counts = count_vectorizer.transform(new_comments)
 new_comments_tfidf = tfidf_transformer.transform(new_comments_counts)
-print(clf.predict(new_comments_tfidf))
+print(classifier.predict(new_comments_tfidf))
