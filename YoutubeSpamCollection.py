@@ -16,9 +16,13 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+import nltk
+nltk.download('stopwords')
 
 filename = 'Youtube01-Psy.csv'
-path = 'C:/Users/shiva/Downloads/youtube+spam+collection'
+path = os.getcwd()
 fullpath = os.path.join(path,filename)
 
 #### Loaded the data into the dataframe
@@ -38,6 +42,25 @@ print(spam_collection.dtypes)
 
 #### Missing values per column
 print(spam_collection.isnull().sum())
+
+# Count the number of spam and non-spam comments
+class_counts = spam_collection['CLASS'].value_counts()
+
+# Plot the counts
+plt.figure(figsize=(8, 6))
+sns.barplot(x=class_counts.index, y=class_counts.values, alpha=0.8)
+plt.title('Spam vs Non-Spam Comments')
+plt.ylabel('Number of Comments', fontsize=12)
+plt.xlabel('Class', fontsize=12)
+plt.show()
+
+# If you want to visualize the length of comments
+spam_collection['length'] = spam_collection['CONTENT'].apply(len)
+plt.figure(figsize=(12, 6))
+spam_collection['length'].plot(bins=50, kind='hist') 
+plt.title('Length of Comments')
+plt.xlabel('Length')
+plt.show()
 
 ### Info of the dataframe
 print(spam_collection.info())
