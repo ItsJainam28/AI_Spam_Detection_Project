@@ -138,6 +138,8 @@ new_comments = [
     "The movies are so boring these days...They just create same old stories again and again.",
     "Check out this video link: https://www.youtube.com/watch?v=lBO1L8pgR9s&ab_channel=UnfoldDataScience",
     "Win a free iPhone 15 pro, click here!",
+    "Loved every minute of this movie. Marcia is perfect and so is Oscar. Beautiful love story.",
+    "Hey subscribe to me﻿"
 ]
 
 new_comments_counts = count_vectorizer.transform(new_comments)
